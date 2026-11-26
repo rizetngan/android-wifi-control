@@ -75,7 +75,10 @@ function Open-Selected{
   $actual=@(Get-AndroidDevices (Get-AdbPath)|Where-Object {$_.Transport -eq $d.Transport -and $_.State -eq 'device'})
   if(!$actual.Count -or ($d.Serial -and $actual[0].Serial -ne $d.Serial)){throw '设备已断开或标识变化，请刷新。'}
   if($d.Transport -match '["\r\n]'){throw 'Invalid transport'}
-  Start-Process -FilePath (Join-Path $settings.scrcpyDir 'scrcpy.exe') -WorkingDirectory $settings.scrcpyDir -ArgumentList ('-s "'+$d.Transport+'" --keyboard='+(Get-KeyboardMode $settings.keyboardMode))
+  if(!$d.Serial -or $d.Serial -match '["\r\n]' -or $settings.scrcpyDir -match '["\r\n]'){throw '请刷新并选择具有设备标识的在线设备。'}
+  $helper=Join-Path $root 'Scrcpy-Session.ps1'
+  $args='-NoProfile -ExecutionPolicy Bypass -STA -WindowStyle Hidden -File "'+$helper+'" -ScrcpyDir "'+$settings.scrcpyDir.TrimEnd('\')+'" -Transport "'+$d.Transport+'" -Serial "'+$d.Serial+'" -KeyboardMode '+(Get-KeyboardMode $settings.keyboardMode)
+  Start-Process -FilePath 'powershell.exe' -WorkingDirectory $root -ArgumentList $args
   $Status.Text='已启动控制窗口。点击安卓输入框，即可使用电脑键盘。'
  }catch{$Status.Text=$_.Exception.Message}
 }

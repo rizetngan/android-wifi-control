@@ -29,6 +29,7 @@ try{
  $stage=Join-Path $temp 'stage'
  Expand-Archive -LiteralPath $zip -DestinationPath $stage
  $files=@('Android-WiFi-Control.ps1','AndroidControl.psm1','Install-AndroidShortcut.ps1','Start-AndroidControl.bat','README.md')
+ if([version]$release.tag_name.TrimStart('v') -ge [version]'2.1.0'){$files+= 'Scrcpy-Session.ps1'}
  foreach($file in $files){if(!(Test-Path -LiteralPath (Join-Path $stage $file) -PathType Leaf)){throw ('Missing package file: '+$file)}}
  $running=@(Get-CimInstance Win32_Process -Filter "Name = 'powershell.exe'" | Where-Object {$_.ProcessId -ne $PID -and $_.CommandLine -match 'Android-WiFi-Control\.ps1'})
  if($running.Count){throw 'Close Android WiFi Control before installing or updating. No running application was stopped.'}
