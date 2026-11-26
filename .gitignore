@@ -10,3 +10,4 @@ config.local.json
 *.key
 adbkey*
 .env*
+android.local.json
