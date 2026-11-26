@@ -35,6 +35,8 @@ try{
  if($running.Count){throw 'Close Android WiFi Control before installing or updating. No running application was stopped.'}
  New-Item -ItemType Directory -Force -Path $InstallDir|Out-Null
  foreach($file in $files){Copy-Item -LiteralPath (Join-Path $stage $file) -Destination (Join-Path $InstallDir $file) -Force}
+ if(Test-Path -LiteralPath (Join-Path $stage 'README.en.md')){Copy-Item -LiteralPath (Join-Path $stage 'README.en.md') -Destination $InstallDir -Force}
+ if(Test-Path -LiteralPath (Join-Path $stage 'docs\media')){New-Item -ItemType Directory -Force -Path (Join-Path $InstallDir 'docs')|Out-Null; Copy-Item -LiteralPath (Join-Path $stage 'docs\media') -Destination (Join-Path $InstallDir 'docs') -Recurse -Force}
  & (Join-Path $InstallDir 'Install-AndroidShortcut.ps1')
  Write-Host ('Installed: '+$InstallDir)
  Write-Host 'Existing android.local.json was preserved. Select your official scrcpy folder in the app on first use.'

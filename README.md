@@ -26,6 +26,30 @@
 
 Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基于成熟的 ADB 与 [scrcpy](https://github.com/Genymobile/scrcpy) 让 Windows 电脑作为控制端，通过 Wi-Fi 或 USB 连接安卓手机和平板，在电脑上查看设备画面并使用键盘、鼠标直接操作。它不重复实现投屏引擎，而是简化设备发现、首次配对和断线重连的过程。
 
+## 2.1.0 · 控制窗口旁的快捷操作
+
+<p align="center">
+<img src="docs/media/scrcpy-toolbar-overview-v2.1.svg" width="100%" alt="投屏侧边工具栏布局及四个快捷操作">
+<br><sub>使用场景示意图；安卓锁屏画面为示意，并非实机截屏。</sub>
+</p>
+
+<table><tr><td width="96" align="center"><img src="docs/media/scrcpy-toolbar-v2.1.png" width="60" alt="v2.1.0 实际 WPF 工具栏渲染"></td><td>
+
+**四个快捷操作，不必切回设备管理器。**
+
+- **唤醒 / 解锁**：亮起设备屏幕并请求系统解锁界面。设置 PIN 或密码的设备仍需正常验证。
+- **电脑键盘**：默认 UHID 物理键盘输入，支持切换 SDK 兼容模式（会重新打开当前投屏）。
+- **亮屏 / 息屏**：控制设备屏幕电源。
+- **返回**：直接执行安卓返回操作。
+
+侧栏随 scrcpy 窗口移动和缩放，移出约 2 秒收起，移入展开；切换其他应用或最小化时隐藏。
+
+</td></tr></table>
+
+<sub>工具栏图片来自实际 WPF 控件渲染，未采集安卓个人内容。</sub>
+
+荣耀 V8 Pro / Android 14 已通过用户实际体验验收，以及窗口跟随、展开收起、最小化恢复、键盘模式切换、唤醒联动回归测试。
+
 ## 功能
 
 - **一键打开控制**：从电脑端直接使用键盘、鼠标操作已授权的安卓手机和平板。
@@ -70,11 +94,11 @@ Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基�
 
 ## 下载安装
 
-**v2.0.0 正式发行版** · Windows · Windows PowerShell 5.1 / WPF
+**v2.1.0 正式发行版** · Windows · Windows PowerShell 5.1 / WPF
 
-**[下载 Windows ZIP](https://github.com/rizetngan/android-wifi-control/releases/download/v2.0.0/Android-WiFi-Control-v2.0.0-Windows.zip)** · [发布说明](https://github.com/rizetngan/android-wifi-control/releases/tag/v2.0.0) · [SHA-256 校验](https://github.com/rizetngan/android-wifi-control/releases/download/v2.0.0/SHA256SUMS.txt) · [全部版本](https://github.com/rizetngan/android-wifi-control/releases)
+**[下载 Windows ZIP](https://github.com/rizetngan/android-wifi-control/releases/download/v2.1.0/Android-WiFi-Control-v2.1.0-Windows.zip)** · [发布说明](https://github.com/rizetngan/android-wifi-control/releases/tag/v2.1.0) · [SHA-256 校验](https://github.com/rizetngan/android-wifi-control/releases/download/v2.1.0/SHA256SUMS.txt) · [全部版本](https://github.com/rizetngan/android-wifi-control/releases)
 
-发行包包含图形化启动器、ADB 连接模块及桌面快捷方式脚本，不需要编译或安装开发工具。它不是独立 EXE 安装器；需另外下载 [官方 scrcpy Windows 发行包](https://github.com/Genymobile/scrcpy/releases)，并在首次启动时选择包含 adb.exe 和 scrcpy.exe 的目录。
+发行包包含图形化启动器、ADB 连接模块、投屏侧边工具栏及桌面快捷方式脚本，不需要编译或安装开发工具。它不是独立 EXE 安装器；需另外下载 [官方 scrcpy Windows 发行包](https://github.com/Genymobile/scrcpy/releases)，并在首次启动时选择包含 adb.exe 和 scrcpy.exe 的目录。
 
 解压后双击 `Start-AndroidControl.bat` 即可运行。
 
@@ -123,7 +147,7 @@ https://github.com/rizetngan/android-wifi-control
 
 使用数据线连接电脑与安卓设备，在设备端确认 USB 调试授权，然后刷新设备列表并打开控制。
 
-### 投屏侧边工具栏与电脑键盘（开发分支）
+### 投屏侧边工具栏与电脑键盘
 
 - 从设备管理器打开控制窗口后，侧边工具栏随 scrcpy 窗口移动、缩放；鼠标离开约 2 秒自动收起，移入展开，最小化或切换其他应用时隐藏。点击工具栏的解锁图标，唤醒屏幕并请求安卓系统显示解锁界面。若设有 PIN、密码等，仍由用户正常输入；不会保存或自动输入解锁凭据。
 - 默认使用 scrcpy UHID 物理键盘。打开控制窗口后点击安卓文本框，使用电脑键盘输入。第一次可按 Alt+K 在安卓物理键盘设置中匹配键盘布局；也可通过安卓输入法输入中文，或在应用支持时使用 Ctrl+V 粘贴。

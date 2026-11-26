@@ -18,6 +18,21 @@ Wireless pairing · Device discovery · Multiple devices · scrcpy control
 
 Android WiFi Control is maintained by [rizetngan](https://github.com/rizetngan). It uses ADB and official scrcpy to let a Windows PC control Android phones and tablets over Wi-Fi or USB, with screen mirroring, mouse and keyboard input, simplified pairing and reconnection.
 
+## 2.1.0 — controls beside the mirrored window
+
+<p align="center"><img src="docs/media/scrcpy-toolbar-overview-v2.1.svg" width="100%" alt="Illustration of the attached control toolbar"><br><sub>Layout illustration, not an actual Android lock-screen capture.</sub></p>
+
+<img src="docs/media/scrcpy-toolbar-v2.1.png" width="60" align="right" alt="Actual WPF toolbar render">
+
+- **Wake / unlock:** wakes the device and requests the normal Android keyguard flow. Enter device credentials when required.
+- **Keyboard:** defaults to UHID physical keyboard input; switch to SDK compatibility mode by restarting the current mirrored session.
+- **Power:** toggles the device screen.
+- **Back:** sends Android's Back action.
+
+The toolbar tracks window movement and resizing, collapses after about two seconds away from the pointer, and hides when minimized or another app is active. It uses a non-activating window to avoid stealing keyboard focus. Official scrcpy remains unchanged.
+
+Tested on Honor V8 Pro / Android 14, including user acceptance and toolbar integration regression checks. Other OEMs still need validation.
+
 ## Features
 
 - View authorized USB and Wi-Fi devices and their model and Android version.
@@ -41,9 +56,9 @@ No project account or cloud relay is required for normal local control. Mirrorin
 
 ## Download
 
-**v2.0.0 — official Windows release**
+**v2.1.0 — official Windows release**
 
-[Windows ZIP](https://github.com/rizetngan/android-wifi-control/releases/download/v2.0.0/Android-WiFi-Control-v2.0.0-Windows.zip) · [Release notes](https://github.com/rizetngan/android-wifi-control/releases/tag/v2.0.0) · [SHA256SUMS](https://github.com/rizetngan/android-wifi-control/releases/download/v2.0.0/SHA256SUMS.txt)
+[Windows ZIP](https://github.com/rizetngan/android-wifi-control/releases/download/v2.1.0/Android-WiFi-Control-v2.1.0-Windows.zip) · [Release notes](https://github.com/rizetngan/android-wifi-control/releases/tag/v2.1.0) · [SHA256SUMS](https://github.com/rizetngan/android-wifi-control/releases/download/v2.1.0/SHA256SUMS.txt)
 
 This is a PowerShell/WPF launcher package, not a standalone EXE. Download [official scrcpy](https://github.com/Genymobile/scrcpy/releases) separately, extract both packages, launch `Start-AndroidControl.bat`, and select the directory containing adb.exe and scrcpy.exe.
 
