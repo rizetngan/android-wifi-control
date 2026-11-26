@@ -14,6 +14,8 @@ Wireless pairing · Device discovery · Multiple devices · scrcpy control
 
 </div>
 
+<p align="center"><img src="docs/media/windows-device-manager.png" width="88%" alt="Actual v2.0.0 Windows UI with an authorized Honor tablet"><br><sub>Live WPF UI, Honor V8 Pro / Android 14, TLS connected; identifiers masked.</sub></p>
+
 Android WiFi Control is maintained by [rizetngan](https://github.com/rizetngan). It uses ADB and official scrcpy to let a Windows PC control Android phones and tablets over Wi-Fi or USB, with screen mirroring, mouse and keyboard input, simplified pairing and reconnection.
 
 ## Features
@@ -23,6 +25,19 @@ Android WiFi Control is maintained by [rizetngan](https://github.com/rizetngan).
 - Discover mDNS services and deduplicate device transports.
 - Save multiple devices and attempt matching TLS reconnections while the window is open.
 - Launch scrcpy by double-clicking an online device. Settings remain local.
+
+## Why Android WiFi Control?
+
+It builds on scrcpy rather than replacing its mirroring engine. The added value is a Windows GUI for pairing, saved devices, discovery, deduplication and connection checks.
+
+| Approach | Best for | Trade-off |
+| --- | --- | --- |
+| Android WiFi Control | Local Windows-to-Android control with saved devices and TLS recovery attempts | Requires ADB authorization and external scrcpy; no WAN remote service |
+| [scrcpy / ADB](https://github.com/Genymobile/scrcpy) | Flexible, high-performance mirroring and command-line workflows | Users may assemble their own device management scripts |
+| [Phone Link](https://support.microsoft.com/en-us/windows/apps/phonelink/setting-up-and-using-phone-screen-in-the-phone-link) | Windows and phone integration | Phone screen is restricted to supported devices and markets |
+| [AirDroid Cast](https://www.airdroid.com/guide/cast/) | Cross-platform casting and remote access | Some control and remote features require a paid plan |
+
+No project account or cloud relay is required for normal local control. Mirroring quality and latency are inherited from scrcpy, not independently improved by this launcher.
 
 ## Download
 

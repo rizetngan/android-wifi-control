@@ -10,9 +10,19 @@
 
 简体中文 · [English](README.en.md)
 
-[功能](#功能) · [下载安装](#下载安装) · [PowerShell 安装](#powershell-安装) · [Agent 安装](#使用-agent-安装) · [使用方法](#使用方法) · [兼容性](#兼容性)
+[功能](#功能) · [方案对比](#为什么选择-android-wifi-control) · [下载安装](#下载安装) · [PowerShell 安装](#powershell-安装) · [Agent 安装](#使用-agent-安装) · [使用方法](#使用方法) · [兼容性](#兼容性)
 
 </div>
+
+<p align="center">
+<img src="docs/media/control-overview.svg" width="100%" alt="Windows 电脑通过 ADB 和 scrcpy 控制安卓设备">
+</p>
+
+<p align="center">
+<img src="docs/media/windows-device-manager.png" width="88%" alt="Android WiFi Control v2.0.0 真机设备管理界面，荣耀 V8 Pro 已连接">
+<br><sub>v2.0.0 实际 WPF 界面 · 荣耀 V8 Pro / Android 14 · TLS 已连接（设备编号及本地路径已隐藏）</sub>
+</p>
+
 
 Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基于成熟的 ADB 与 [scrcpy](https://github.com/Genymobile/scrcpy) 让 Windows 电脑作为控制端，通过 Wi-Fi 或 USB 连接安卓手机和平板，在电脑上查看设备画面并使用键盘、鼠标直接操作。它不重复实现投屏引擎，而是简化设备发现、首次配对和断线重连的过程。
 
@@ -24,6 +34,30 @@ Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基�
 - **多设备管理**：保存常用设备；同一设备的 USB、TLS 或传统 TCP 连接按设备标识去重。
 - **连接恢复**：窗口开启时定期检查已保存设备，尝试恢复匹配的 TLS 无线连接。
 - **轻量运行**：原生 WPF 界面，复用官方 scrcpy，不需要额外投屏引擎；配置保存在本地。
+
+## 为什么选择 Android WiFi Control？
+
+**它不是另一个投屏引擎，而是把成熟的 scrcpy 变成更容易日常使用的 Windows 控制方案。** 对已经拥有安卓手机或平板的用户，核心价值是减少重复配置，而不是增加一套远程服务。
+
+| 对比维度 | Android WiFi Control | 原生 scrcpy / ADB | Windows 手机连接（Phone Link） | AirDroid Cast |
+| --- | --- | --- | --- | --- |
+| 主要定位 | Windows 控制个人安卓设备 | 高效投屏与控制引擎 | 手机与 Windows 的通知、通话、应用协同 | 跨平台投屏及远程控制 |
+| 安卓设备范围 | 具备相应 ADB 能力的设备；实际权限因厂商而异 | Android 5+，无线依系统版本配置 | 手机屏幕功能限官方支持的设备及市场 | 依其客户端、权限与系统支持 |
+| 首次配置 | 图形化配对和连接，需设备确认 | ADB 配对、连接命令；也提供无线启动参数 | Link to Windows 配对、账号及权限配置 | 客户端配对与相应控制授权 |
+| 常用设备 | 本地保存设备、型号识别、连接去重 | 支持选择设备，可通过脚本扩展 | 内置设备关联与手机协同 | 支持多设备投屏 |
+| 连接恢复 | 应用运行期间尝试恢复已保存设备的 TLS 连接 | ADB 支持发现/重连；可自行组合脚本 | 由手机连接服务管理 | 由其客户端及服务管理 |
+| 账号与网络 | 日常局域网控制无需本项目账号或云中转 | 无账号；支持 USB/TCP | 依微软账号与配对流程 | 支持跨网络投屏；按产品功能及套餐配置 |
+| 费用 | 当前发行包无需付费，scrcpy 免费 | 免费、开源 | Windows 自带/免费应用 | 免费基础投屏；部分控制及远程功能需付费 |
+
+资料来源：[scrcpy 官方功能](https://github.com/Genymobile/scrcpy) · [scrcpy 无线连接](https://github.com/Genymobile/scrcpy/blob/master/doc/connection.md) · [Phone Link 支持设备](https://support.microsoft.com/zh-cn/windows/apps/phonelink/supported-devices-for-phone-link-experiences) · [Phone Link 配置](https://support.microsoft.com/en-gb/windows/apps/phonelink/phone-link-requirements-and-setup) · [AirDroid Cast 官方指南](https://www.airdroid.com/guide/cast/) · [AirDroid Cast 免费与付费权益](https://help.airdroid.com/hc/en-us/articles/16783993952411-What-the-different-between-AirDroid-Cast-Premium-Free-account)。
+
+### 从命令操作到日常设备管理
+
+<p align="center"><img src="docs/media/connection-flow.svg" width="100%" alt="首次配对、保存设备、双击打开控制、尝试 TLS 恢复的流程图"><br><sub>连接流程示意 · 无需每次手动输入连接命令</sub></p>
+
+**与原生 scrcpy 的关系：** scrcpy 本身已经具备出色的投屏、键鼠控制及无线连接能力。本项目的增量是 Windows 图形界面、常用设备记录、自动发现地址、重复连接去重及运行期间的连接检查。不宣称投屏延迟或画质优于 scrcpy。
+
+**与商业远控的取舍：** 优先服务同一可信网络内的个人设备，不要求额外注册账号或订阅本项目，也不提供公网远程访问、企业设备管理或手机通知同步。若需要跨互联网远程控制，商业方案可能更适合。
 
 ## 使用场景
 
