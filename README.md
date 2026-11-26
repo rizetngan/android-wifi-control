@@ -2,7 +2,7 @@
 
 # Android WiFi Control
 
-**一款让安卓手机、平板轻松连接 Windows 电脑的轻量控制工具**
+**让 Windows 电脑轻松控制安卓手机与平板的无线控制方案**
 
 无线配对 · 自动发现 · 多设备管理 · scrcpy 投屏与键鼠控制
 
@@ -14,7 +14,7 @@
 
 </div>
 
-Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基于成熟的 ADB 与 [scrcpy](https://github.com/Genymobile/scrcpy) 提供统一的 Windows 设备管理入口。它不重复实现投屏引擎，而是简化发现设备、首次配对、重新连接与打开控制窗口的过程。
+Android WiFi Control 由 [rizetngan](https://github.com/rizetngan) 维护，基于成熟的 ADB 与 [scrcpy](https://github.com/Genymobile/scrcpy) 让 Windows 电脑作为控制端，通过 Wi-Fi 或 USB 连接安卓手机和平板，在电脑上查看设备画面并使用键盘、鼠标直接操作。它不重复实现投屏引擎，而是简化设备发现、首次配对和断线重连的过程。
 
 ## 功能
 

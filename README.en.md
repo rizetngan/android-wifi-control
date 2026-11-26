@@ -2,7 +2,7 @@
 
 # Android WiFi Control
 
-**A lightweight Windows device manager for Android phones and tablets**
+**Effortlessly control Android phones and tablets from your Windows PC**
 
 Wireless pairing · Device discovery · Multiple devices · scrcpy control
 
@@ -14,7 +14,7 @@ Wireless pairing · Device discovery · Multiple devices · scrcpy control
 
 </div>
 
-Android WiFi Control is maintained by [rizetngan](https://github.com/rizetngan). It uses ADB and official scrcpy to simplify device discovery, pairing, connection and control on Windows.
+Android WiFi Control is maintained by [rizetngan](https://github.com/rizetngan). It uses ADB and official scrcpy to let a Windows PC control Android phones and tablets over Wi-Fi or USB, with screen mirroring, mouse and keyboard input, simplified pairing and reconnection.
 
 ## Features
 
