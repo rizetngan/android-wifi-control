@@ -1,0 +1,5 @@
+{
+  "deviceId": "YOUR_DEVICE_SERIAL",
+  "scrcpyDir": "C:\\Tools\\scrcpy",
+  "preferFixedPort": false
+}

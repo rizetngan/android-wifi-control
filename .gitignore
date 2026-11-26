@@ -1,0 +1,12 @@
+config.local.json
+*.log
+*.bak
+*.apk
+*.exe
+*.dll
+*.png
+*.jpg
+*.xml
+*.key
+adbkey*
+.env*
