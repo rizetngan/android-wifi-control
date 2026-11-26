@@ -4,28 +4,28 @@ Add-Type -AssemblyName PresentationFramework,PresentationCore,WindowsBase,System
 Import-Module (Join-Path $PSScriptRoot 'AndroidControl.psm1') -Force -DisableNameChecking
 $root=$PSScriptRoot
 $local=Join-Path $root 'android.local.json'
-$settings=[ordered]@{scrcpyDir='';devices=@();autoReconnect=$true}
-if(Test-Path $local){$c=Get-Content $local -Raw -Encoding UTF8|ConvertFrom-Json;$settings.scrcpyDir=$c.scrcpyDir;$settings.devices=@($c.devices);$settings.autoReconnect=[bool]$c.autoReconnect}
+$settings=[ordered]@{scrcpyDir='';devices=@();autoReconnect=$true;keyboardMode='uhid'}
+if(Test-Path $local){$c=Get-Content $local -Raw -Encoding UTF8|ConvertFrom-Json;$settings.scrcpyDir=$c.scrcpyDir;$settings.devices=@($c.devices);$settings.autoReconnect=[bool]$c.autoReconnect;if($c.PSObject.Properties['keyboardMode']){$settings.keyboardMode=Get-KeyboardMode $c.keyboardMode}}
 if($ScrcpyDir){$settings.scrcpyDir=$ScrcpyDir}
 function Save-Settings{$settings|ConvertTo-Json -Depth 5|Set-Content $local -Encoding UTF8}
 [xml]$xml=@'
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Android WiFi Control" Width="860" Height="600" MinWidth="760" MinHeight="530" Background="#F4F5F7" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI, Microsoft YaHei UI" FontSize="14">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Android WiFi Control" Width="860" Height="600" MinWidth="850" MinHeight="530" Background="#F4F5F7" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI, Microsoft YaHei UI" FontSize="14">
 <Window.Resources><Style TargetType="Button"><Setter Property="Padding" Value="14,8"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#D5D9E1"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Bd" CornerRadius="7" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Bd" Property="Opacity" Value="0.8"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="Bd" Property="Opacity" Value="0.45"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style></Window.Resources>
 <Grid Margin="26"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-<DockPanel Margin="0,0,0,18"><Button x:Name="Folder" Content="scrcpy 设置" DockPanel.Dock="Right" VerticalAlignment="Center"/><StackPanel><TextBlock Text="Android WiFi Control" FontSize="28" FontWeight="SemiBold" Foreground="#1C2635"/><TextBlock x:Name="Location" FontSize="12" Foreground="#667085" Margin="0,4,0,0"/></StackPanel></DockPanel>
+<DockPanel Margin="0,0,0,18"><StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center"><ComboBox x:Name="KeyboardMode" Width="126" Margin="0,0,8,0" Padding="7,6" ToolTip="电脑键盘（UHID）或兼容模式（SDK）。切换后重新打开控制窗口。" AutomationProperties.Name="键盘输入模式"><ComboBoxItem Content="电脑键盘" Tag="uhid"/><ComboBoxItem Content="兼容键盘" Tag="sdk"/></ComboBox><Button x:Name="Folder" Content="scrcpy 设置"/></StackPanel><StackPanel><TextBlock Text="Android WiFi Control" FontSize="28" FontWeight="SemiBold" Foreground="#1C2635"/><TextBlock x:Name="Location" FontSize="12" Foreground="#667085" Margin="0,4,0,0"/></StackPanel></DockPanel>
 <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="16" Margin="0,0,0,12" BorderBrush="#E0E4EA" BorderThickness="1"><StackPanel><TextBlock Text="添加设备" FontWeight="SemiBold" Margin="0,0,0,10"/><WrapPanel><ComboBox x:Name="Endpoint" IsEditable="True" Width="220" Padding="6,7" Margin="0,0,8,0" ToolTip="IP:端口（下拉显示局域网发现地址）" AutomationProperties.Name="连接或配对地址"/><PasswordBox x:Name="Code" Width="100" Padding="9,7" Margin="0,0,8,0" MaxLength="6" ToolTip="六位配对码" AutomationProperties.Name="配对码"/><Button x:Name="Pair" Content="配对"/><Button x:Name="Connect" Content="连接"/><Button x:Name="Refresh" Content="刷新"/></WrapPanel><TextBlock Text="首次配对填写设备显示的配对地址与六位码；连接时使用无线调试主页的连接地址。" Foreground="#667085" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0"/></StackPanel></Border>
 <Border Grid.Row="2" Background="White" CornerRadius="10" Padding="14" BorderBrush="#E0E4EA" BorderThickness="1"><DockPanel><TextBlock Text="我的设备" FontWeight="SemiBold" FontSize="16" DockPanel.Dock="Top" Margin="0,0,0,12"/><ListView x:Name="Devices" BorderThickness="0" SelectionMode="Single"><ListView.View><GridView><GridViewColumn Header="设备" Width="170" DisplayMemberBinding="{Binding Display}"/><GridViewColumn Header="Android" Width="75" DisplayMemberBinding="{Binding Android}"/><GridViewColumn Header="连接方式" Width="85" DisplayMemberBinding="{Binding Kind}"/><GridViewColumn Header="状态" Width="100" DisplayMemberBinding="{Binding Status}"/><GridViewColumn Header="设备标识" Width="210" DisplayMemberBinding="{Binding Identity}"/></GridView></ListView.View></ListView></DockPanel></Border>
-<DockPanel Grid.Row="3" Margin="0,14,0,10"><CheckBox x:Name="Auto" Content="自动恢复已保存设备" DockPanel.Dock="Right" VerticalAlignment="Center"/><StackPanel Orientation="Horizontal"><Button x:Name="Open" Content="打开控制" Background="#275DDD" Foreground="White" BorderBrush="#275DDD"/><Button x:Name="Remember" Content="保存设备"/><Button x:Name="Forget" Content="移除记录"/><Button x:Name="Guide" Content="连接帮助"/></StackPanel></DockPanel>
+<DockPanel Grid.Row="3" Margin="0,14,0,10"><CheckBox x:Name="Auto" Content="自动恢复已保存设备" DockPanel.Dock="Right" VerticalAlignment="Center"/><StackPanel Orientation="Horizontal"><Button x:Name="Open" Content="打开控制" Background="#275DDD" Foreground="White" BorderBrush="#275DDD"/><Button x:Name="Wake" Content="唤醒 / 解锁" ToolTip="唤醒屏幕并打开系统解锁界面；如需密码请手动输入。"/><Button x:Name="Remember" Content="保存设备"/><Button x:Name="Forget" Content="移除记录"/><Button x:Name="Guide" Content="连接帮助"/></StackPanel></DockPanel>
 <TextBlock Grid.Row="4" x:Name="Status" Foreground="#536174" FontSize="12" TextWrapping="Wrap" Text="就绪"/>
 </Grid></Window>
 '@
 $win=[Windows.Markup.XamlReader]::Load((New-Object System.Xml.XmlNodeReader $xml))
-foreach($name in @('Folder','Location','Endpoint','Code','Pair','Connect','Refresh','Devices','Auto','Open','Remember','Forget','Guide','Status')){Set-Variable -Name $name -Value $win.FindName($name)}
-$Auto.IsChecked=$settings.autoReconnect
+foreach($name in @('Folder','KeyboardMode','Location','Endpoint','Code','Pair','Connect','Refresh','Devices','Auto','Open','Wake','Remember','Forget','Guide','Status')){Set-Variable -Name $name -Value $win.FindName($name)}
+$Auto.IsChecked=$settings.autoReconnect;$KeyboardMode.SelectedIndex=if($settings.keyboardMode -eq 'sdk'){1}else{0}
 $script:job=$null;$script:busy=$false;$script:nextScan=[DateTime]::UtcNow
 function Get-AdbPath{if($settings.scrcpyDir){$p=Join-Path $settings.scrcpyDir 'adb.exe';if((Test-Path $p) -and (Test-Path (Join-Path $settings.scrcpyDir 'scrcpy.exe'))){return $p}}}
 function Update-Location{$Location.Text=if(Get-AdbPath){$settings.scrcpyDir}else{'请选择 scrcpy 解压目录'}}
-function Set-Busy([bool]$busy){$script:busy=$busy;foreach($b in @($Folder,$Pair,$Connect,$Refresh,$Open,$Remember,$Forget)){$b.IsEnabled=!$busy}}
+function Set-Busy([bool]$busy){$script:busy=$busy;foreach($b in @($Folder,$Pair,$Connect,$Refresh,$Open,$Wake,$Remember,$Forget)){$b.IsEnabled=!$busy}}
 function Update-List($rows){
  $selected=$Devices.SelectedItem;$items=@();$seen=@{}
  foreach($d in @($rows|Sort-Object @{Expression={if($_.Kind -eq 'TLS'){0}elseif($_.Kind -eq 'USB'){1}else{2}}})){
@@ -41,13 +41,13 @@ function Update-List($rows){
 }
 function Start-Action([string]$action,[string]$address='',[string]$code=''){
  if($script:busy){return};$adb=Get-AdbPath;if(!$adb){$Status.Text='请先设置 scrcpy 目录。';return}
- Set-Busy $true;$Status.Text='正在检查设备…'
+ Set-Busy $true;$Status.Text=if($action -eq 'wake'){'正在唤醒设备…'}else{'正在检查设备…'}
  $saved=ConvertTo-Json -InputObject @($settings.devices) -Depth 5 -Compress
  $script:job=Start-Job -ArgumentList (Join-Path $root 'AndroidControl.psm1'),$adb,$action,$address,$code,$saved,([bool]$Auto.IsChecked) -ScriptBlock {
   param($module,$adb,$action,$address,$code,$saved,$auto)
   $ErrorActionPreference='Stop';Import-Module $module -Force -DisableNameChecking;$msg=''
   if($action -eq 'pair'){$msg=Pair-AndroidEndpoint $adb $address $code}
-  if($action -eq 'connect'){$msg=Connect-AndroidEndpoint $adb $address}
+  if($action -eq 'connect'){$msg=Connect-AndroidEndpoint $adb $address};if($action -eq 'wake'){$requested=Wake-AndroidDevice $adb $address $code;$msg=if($requested){'已请求系统解锁。如需密码，请在设备解锁界面手动输入。'}else{'已唤醒；请在设备上完成解锁。'}}
   $list=@(ConvertFrom-Json $saved)
   $rows=if($auto -and $list.Count){@(Restore-AndroidDevices $adb $list)}else{@(Get-AndroidDevices $adb)}
   try{$services=@(ConvertFrom-AdbMdns ((Invoke-Adb $adb @('mdns','services')) -split '\r?\n'))}catch{$services=@()}; [pscustomobject]@{Message=$msg;Rows=@($rows);Services=@($services)}
@@ -64,6 +64,8 @@ $Pair.Add_Click({$p=$Code.Password;$Code.Clear();Start-Action pair $Endpoint.Tex
 $Connect.Add_Click({Start-Action connect $Endpoint.Text.Trim()})
 $Refresh.Add_Click({Start-Action scan})
 $Auto.Add_Click({$settings.autoReconnect=[bool]$Auto.IsChecked;Save-Settings})
+$KeyboardMode.Add_SelectionChanged({if($KeyboardMode.SelectedItem){$settings.keyboardMode=Get-KeyboardMode $KeyboardMode.SelectedItem.Tag;Save-Settings;$Status.Text='键盘模式已保存，重新打开控制窗口后生效。'}})
+$Wake.Add_Click({$d=$Devices.SelectedItem;if(!$d -or $d.State -ne 'device' -or !$d.Serial){$Status.Text='请选择已连接的设备。';return};Start-Action wake $d.Transport $d.Serial})
 $Remember.Add_Click({$d=$Devices.SelectedItem;if(!$d -or $d.State -ne 'device' -or !$d.Serial){$Status.Text='请选择已连接的设备。';return};$settings.devices=@($settings.devices|Where-Object Serial -ne $d.Serial)+@([pscustomobject]@{Serial=$d.Serial;Display=$d.Display;Android=$d.Android});Save-Settings;$Status.Text='已保存设备。'})
 $Forget.Add_Click({$d=$Devices.SelectedItem;if($d){$settings.devices=@($settings.devices|Where-Object Serial -ne $d.Serial);Save-Settings;Start-Action scan}})
 function Open-Selected{
@@ -73,8 +75,8 @@ function Open-Selected{
   $actual=@(Get-AndroidDevices (Get-AdbPath)|Where-Object {$_.Transport -eq $d.Transport -and $_.State -eq 'device'})
   if(!$actual.Count -or ($d.Serial -and $actual[0].Serial -ne $d.Serial)){throw '设备已断开或标识变化，请刷新。'}
   if($d.Transport -match '["\r\n]'){throw 'Invalid transport'}
-  Start-Process -FilePath (Join-Path $settings.scrcpyDir 'scrcpy.exe') -WorkingDirectory $settings.scrcpyDir -ArgumentList ('-s "'+$d.Transport+'"')
-  $Status.Text='已启动控制窗口。'
+  Start-Process -FilePath (Join-Path $settings.scrcpyDir 'scrcpy.exe') -WorkingDirectory $settings.scrcpyDir -ArgumentList ('-s "'+$d.Transport+'" --keyboard='+(Get-KeyboardMode $settings.keyboardMode))
+  $Status.Text='已启动控制窗口。点击安卓输入框，即可使用电脑键盘。'
  }catch{$Status.Text=$_.Exception.Message}
 }
 $Open.Add_Click({Open-Selected});$Devices.Add_MouseDoubleClick({Open-Selected})

@@ -19,4 +19,7 @@ if($ScrcpyDir){
  $live|Select-Object Brand,Model,Android,State,Kind|Format-Table
  Write-Host 'Live device metadata PASS'
 }
+Assert ((Get-KeyboardMode 'uhid') -eq 'uhid') 'Physical keyboard default'
+Assert ((Get-KeyboardMode 'sdk') -eq 'sdk') 'SDK compatibility mode'
+Assert ((Get-KeyboardMode '') -eq 'uhid') 'Missing mode migration'
 Write-Host 'Core tests PASS'

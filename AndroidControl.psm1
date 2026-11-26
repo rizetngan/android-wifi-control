@@ -69,4 +69,21 @@ function Restore-AndroidDevices([string]$Adb,[object[]]$Saved){
  }
  Get-AndroidDevices $Adb
 }
+function Get-VerifiedAndroidTransport([string]$Adb,[string]$Transport,[string]$Serial){
+ if(!$Transport -or !$Serial){throw 'Refresh and select an authorized device with a verified identifier.'}
+ $actual=@(Get-AndroidDevices $Adb | Where-Object {$_.Transport -eq $Transport -and $_.State -eq 'device' -and $_.Serial -eq $Serial})
+ if($actual.Count -ne 1){throw 'Device is no longer online or its identity changed. Refresh and retry.'}
+ $actual[0]
+}
+function Wake-AndroidDevice([string]$Adb,[string]$Transport,[string]$Serial){
+ $null=Get-VerifiedAndroidTransport $Adb $Transport $Serial
+ $null=Invoke-Adb $Adb @('-s',$Transport,'shell','input','keyevent','KEYCODE_WAKEUP')
+ # Use Android's ordinary keyguard dismissal request, which preserves credential checks.
+ Start-Sleep -Milliseconds 350
+ try{$null=Invoke-Adb $Adb @('-s',$Transport,'shell','wm','dismiss-keyguard');return $true}catch{return $false}
+}
+function Get-KeyboardMode([string]$Mode){
+ if($Mode -eq 'sdk'){return 'sdk'}
+ return 'uhid'
+}
 Export-ModuleMember -Function *
